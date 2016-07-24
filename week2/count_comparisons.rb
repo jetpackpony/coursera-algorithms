@@ -14,7 +14,7 @@ class Comparisons
   private
 
   def quick_sort l, r
-    return if r - l <= 1
+    return if (r - l + 1) <= 1
 
     @count += (r - l)
 
@@ -30,7 +30,7 @@ class Comparisons
     
     swap(i - 1, l)
 
-    quick_sort(l, i - 1)
+    quick_sort(l, i - 2)
     quick_sort(i, r)
   end
 
@@ -42,13 +42,33 @@ class Comparisons
   end
 
   def pivot_id l, r
-    return l
+    # Task 1
+    #return l
+
+    # Task 2
+    #return r
+
+    # Task 3
+    return get_median l, r
+  end
+
+  def get_median l, r
+    middle = ((r - l) / 2.0).floor + l
+
+    median = ([@arr[l], @arr[middle], @arr[r]].sort)[1]
+
+    return l if median == @arr[l]
+    return middle if median == @arr[middle]
+    return r if median == @arr[r]
   end
 end
 
 integers = []
 f = File.open "IntegersQuickSort.txt"
 f.each_line {|line| integers.push line.to_i}
+
+#integers = [8,2,6,5,1,4,3,9,0,7]
+
 
 comps = Comparisons.new(integers)
 
