@@ -12,7 +12,7 @@ describe Graphs::Graph do
       5 1 4
       GRAPH
     end
-    let(:parsed_graph) { Graphs::Graph.new simple_graph}
+    let(:parsed_graph) { Graphs::Graph.new.load simple_graph}
 
     it "create vertecies from text data" do
       expect(parsed_graph[1]).to be_a Graphs::Graph::Vertex
@@ -29,10 +29,14 @@ describe Graphs::Graph do
       expect(parsed_graph[5].has_edge_with parsed_graph[1]).to be true
       expect(parsed_graph[5].has_edge_with parsed_graph[4]).to be true
     end
+
+    it "returns the number of vertices" do
+      expect(parsed_graph.count).to eq 5
+    end
   end
 
   context "graph with parallel edges" do
-    let(:simple_graph) do
+    let(:graph_with_parallels) do
       <<-GRAPH.gsub(/^\s*/, "")
       1 2 4 5 2
       2 1 3 4 1
@@ -41,7 +45,11 @@ describe Graphs::Graph do
       5 1 4 3 3
       GRAPH
     end
-    let(:parsed_graph) { Graphs::Graph.new simple_graph}
+    let(:parsed_graph) { Graphs::Graph.new.load graph_with_parallels}
+    
+    it "returns the zero number of edges" do
+      expect(parsed_graph[1].count_edges_with parsed_graph[3]).to eq 0
+    end
 
     it "returns correct number of the parallel edges" do
       expect(parsed_graph[1].count_edges_with parsed_graph[2]).to eq 2
@@ -50,6 +58,105 @@ describe Graphs::Graph do
       expect(parsed_graph[5].count_edges_with parsed_graph[3]).to eq 2
       expect(parsed_graph[1].count_edges_with parsed_graph[5]).to eq 1
       expect(parsed_graph[4].count_edges_with parsed_graph[5]).to eq 1
+    end
+
+    it "replaces edges correctly" do
+      parsed_graph[2].replace_edges 1, 5
+      parsed_graph[3].replace_edges 4, 1
+      expect(parsed_graph[2].count_edges_with parsed_graph[5]).to eq 2
+      expect(parsed_graph[3].count_edges_with parsed_graph[1]).to eq 1
+    end
+  end
+
+  context "contracting graphs" do
+    let(:graph_text) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      1 2 4 5
+      2 1 3 4
+      3 2 4
+      4 1 2 3 5
+      5 1 4
+      GRAPH
+    end
+    let(:graph) { Graphs::Graph.new.load graph_text }
+
+    let(:contracted_graph_text) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      1 2 4 4
+      2 1 3 4
+      3 2 4
+      4 1 2 3 1
+      GRAPH
+    end
+    let(:contracted_graph) { Graphs::Graph.new.load contracted_graph_text }
+
+    it "correctly contracts graph" do
+      expect(graph.contract(1, 5)).to eq contracted_graph
+    end
+
+    it "correctly contracts graph when indexes are not in order" do
+      skip
+      expect(graph.contract(5, 1)).to eq contracted_graph
+    end
+  end
+
+  context "graph with self loops" do
+    let(:graph_text) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      1 2 4 5 1
+      2 1 3 4
+      3 2 4 3
+      4 1 2 3 5
+      5 1 4
+      GRAPH
+    end
+    let(:graph) { Graphs::Graph.new.load graph_text }
+
+    it "removes the self loops" do
+      expect(graph[1].count_edges_with graph[1]).to eq 1
+      graph[1].remove_self_loops
+      expect(graph[1].count_edges_with graph[1]).to eq 0
+    end
+  end
+
+  context "comparing graphs" do
+    let(:graph_text_1) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      1 2 4 5
+      2 1 3 4
+      3 2 4
+      4 1 2 3 5
+      5 1 4
+      GRAPH
+    end
+    let(:graph_1) { Graphs::Graph.new.load graph_text_1 }
+    let(:graph_text_2) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      1 5 2 4
+      2 1 3 4
+      3 4 2
+      4 1 3 2 5
+      5 4 1
+      GRAPH
+    end
+    let(:graph_2) { Graphs::Graph.new.load graph_text_2 }
+    let(:graph_text_3) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      1 2 4 3
+      2 1 3 4
+      3 2 4
+      4 1 2 2 5
+      5 1 4
+      GRAPH
+    end
+    let(:graph_3) { Graphs::Graph.new.load graph_text_3 }
+
+    it "should correctly compare equal graphs" do
+      expect(graph_1).to eq graph_1
+      expect(graph_1).to eq graph_2
+    end
+    it "should correctly compare not equal graphs" do
+      expect(graph_1).not_to eq graph_3
     end
   end
 end
