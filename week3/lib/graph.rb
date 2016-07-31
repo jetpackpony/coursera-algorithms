@@ -28,11 +28,15 @@ module Graphs
     end
 
     def contract(v1, v2)
+      return self if v1 == v2
+      v1 = @vertices[v1 - 1].id
+      v2 = @vertices[v2 - 1].id
       new_graph = Graph.new
       @vertices.each do |vert|
         if vert.id == v2
           next
         end
+        vert = vert.copy
         if vert.id == v1
           vert.add_edges self[v2].edges
           vert.replace_edges v2, v1
@@ -48,8 +52,23 @@ module Graphs
       new_graph
     end
 
+    def contract!(v1, v2)
+      @vertices = contract(v1, v2).vertices
+      self
+    end
+
+    def copy
+      new_graph = Graph.new
+      vertices.each { |vert| new_graph.push vert }
+      new_graph
+    end
+
     def ==(other)
       vertices.sort { |x,y| x.id <=> y.id } == other.vertices.sort { |x,y| x.id <=> y.id }
+    end
+
+    def inspect
+      vertices.map { |vert| vert.inspect + "\n" }
     end
 
     class Vertex
@@ -87,6 +106,12 @@ module Graphs
       def ==(other)
         id == other.id &&
           edges.sort == other.edges.sort
+      end
+
+      def copy
+        new_vert = Vertex.new id
+        new_vert.add_edges @edges
+        new_vert
       end
     end
   end

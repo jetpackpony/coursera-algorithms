@@ -94,6 +94,15 @@ describe Graphs::Graph do
       expect(graph.contract(1, 5)).to eq contracted_graph
     end
 
+    it "correctly contracts self" do
+      graph.contract!(1, 5)
+      expect(graph).to eq contracted_graph
+    end
+
+    it "returns self if the contraction points are the same" do
+      expect(graph.contract(1, 1)).to eq graph
+    end
+
     it "correctly contracts graph when indexes are not in order" do
       skip
       expect(graph.contract(5, 1)).to eq contracted_graph
