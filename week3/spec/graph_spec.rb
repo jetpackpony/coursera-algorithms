@@ -30,4 +30,26 @@ describe Graphs::Graph do
       expect(parsed_graph[5].has_edge_with parsed_graph[4]).to be true
     end
   end
+
+  context "graph with parallel edges" do
+    let(:simple_graph) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      1 2 4 5 2
+      2 1 3 4 1
+      3 2 4 5 5
+      4 1 2 3 5
+      5 1 4 3 3
+      GRAPH
+    end
+    let(:parsed_graph) { Graphs::Graph.new simple_graph}
+
+    it "returns correct number of the parallel edges" do
+      expect(parsed_graph[1].count_edges_with parsed_graph[2]).to eq 2
+      expect(parsed_graph[2].count_edges_with parsed_graph[1]).to eq 2
+      expect(parsed_graph[3].count_edges_with parsed_graph[5]).to eq 2
+      expect(parsed_graph[5].count_edges_with parsed_graph[3]).to eq 2
+      expect(parsed_graph[1].count_edges_with parsed_graph[5]).to eq 1
+      expect(parsed_graph[4].count_edges_with parsed_graph[5]).to eq 1
+    end
+  end
 end

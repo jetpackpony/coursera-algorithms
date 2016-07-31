@@ -30,6 +30,10 @@ module Graphs
       def has_edge_with(vertex)
         @edges.include? vertex.id
       end
+
+      def count_edges_with(vertex)
+        @edges.count vertex.id
+      end
     end
   end
 end
