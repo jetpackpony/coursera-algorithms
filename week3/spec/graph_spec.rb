@@ -10,6 +10,7 @@ describe Graphs::Graph do
       3 2 4
       4 1 2 3 5
       5 1 4
+
       GRAPH
     end
     let(:parsed_graph) { Graphs::Graph.new.load simple_graph}
@@ -166,6 +167,34 @@ describe Graphs::Graph do
     end
     it "should correctly compare not equal graphs" do
       expect(graph_1).not_to eq graph_3
+    end
+  end
+
+  context "large graph parsing" do
+    let(:simple_graph) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      1 2 4 5
+      2 1 3 4
+      3 2 4
+      4 1 2 3 5
+      5 1 4
+      6 1 4
+      7 1 4
+      8 1 4
+      9 1 4
+      10 1 4
+
+      GRAPH
+    end
+    let(:parsed_graph) { Graphs::Graph.new.load simple_graph}
+
+    it "create vertecies from text data" do
+      expect(parsed_graph[10]).to be_a Graphs::Graph::Vertex
+    end
+
+    it "assigns proper edges to vertices" do
+      expect(parsed_graph[10].has_edge_with parsed_graph[1]).to be true
+      expect(parsed_graph[10].has_edge_with parsed_graph[4]).to be true
     end
   end
 end

@@ -7,7 +7,7 @@ module Graphs
 
     def load(text_data)
       text_data.split("\n").each do |edges|
-        edges = edges.split(%r{\s*}).map!(&:to_i)
+        edges = edges.split(%r{\s+}).map!(&:to_i)
         vert = Vertex.new(edges.shift)
         vert.add_edges(edges)
         self.push vert
@@ -39,15 +39,11 @@ module Graphs
         vert = vert.copy
         if vert.id == v1
           vert.add_edges self[v2].edges
-          vert.replace_edges v2, v1
-          vert.remove_self_loops
-          new_graph.push vert
-        elsif vert.has_edge_with self[v2]
-          vert.replace_edges v2, v1
-          new_graph.push vert
-        else
-          new_graph.push vert
         end
+
+        vert.replace_edges v2, v1
+        vert.remove_self_loops
+        new_graph.push vert
       end
       new_graph
     end
@@ -79,12 +75,8 @@ module Graphs
         @edges = []
       end
 
-      def add_edge(vertex)
-        @edges.push vertex
-      end
-
       def add_edges(vertices)
-        vertices.each { |vertex| add_edge vertex }
+        @edges.concat vertices
       end
 
       def has_edge_with(vertex)
