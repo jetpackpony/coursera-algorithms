@@ -16,7 +16,7 @@ module Graphs
     end
 
     def [](x)
-      @vertices.find { |v| v.id == x }
+      @vertices[x - 1]
     end
 
     def push(vertex)
@@ -24,19 +24,17 @@ module Graphs
     end
 
     def delete(x)
-      @vertices.delete_at @vertices.find_index { |v| v.id == x }
+      @vertices[x - 1] = nil
     end
 
     def count
-      @vertices.count
+      @vertices.select{ |x| !x.nil? }.count
     end
 
     def contract(v1, v2)
       return self if v1 == v2
-      v1 = @vertices[v1 - 1].id
-      v2 = @vertices[v2 - 1].id
       @vertices.each do |vert|
-        if vert.id == v2
+        if vert.nil? || vert.id == v2
           next
         end
 
@@ -51,6 +49,21 @@ module Graphs
       self
     end
 
+    def random_contract
+      while self.count > 2
+        contract(random_vertex, random_vertex)
+      end
+      self
+    end
+
+    def random_vertex
+      vertices.select{ |x| !x.nil? }.sample.id
+    end
+
+    def first
+      vertices.select{ |x| !x.nil? }.first
+    end
+
     def copy
       new_graph = Graph.new
       vertices.each { |vert| new_graph.push vert.copy }
@@ -58,7 +71,9 @@ module Graphs
     end
 
     def ==(other)
-      vertices.sort { |x,y| x.id <=> y.id } == other.vertices.sort { |x,y| x.id <=> y.id }
+      left = vertices.select{ |x| !x.nil? }.sort { |x,y| x.id <=> y.id }
+      right = other.vertices.select{ |x| !x.nil? }.sort { |x,y| x.id <=> y.id }
+      left == right
     end
 
     def inspect
@@ -94,6 +109,7 @@ module Graphs
       end
 
       def ==(other)
+        return false if other.nil?
         id == other.id &&
           edges.sort == other.edges.sort
       end

@@ -2,7 +2,7 @@ require_relative '../lib/graph'
 require 'byebug'
 
 describe Graphs::Graph do
-  context "simple graph parsing" do
+  context "simple graph parsing", focus: true do
     let(:simple_graph) do
       <<-GRAPH.gsub(/^\s*/, "")
       1 2 4 5
@@ -199,4 +199,30 @@ describe Graphs::Graph do
       expect(parsed_graph[10].has_edge_with parsed_graph[4]).to be true
     end
   end
+
+  context "random contraction" do
+    let(:graph_text) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      1 2 4 5 1
+      2 1 3 4
+      3 2 4 3
+      4 1 2 3 5
+      5 1 4
+      GRAPH
+    end
+    let(:graph) { Graphs::Graph.new.load graph_text }
+    let(:contracted_graph_text) do
+      <<-GRAPH.gsub(/^\s*/, "")
+      2 3 3 3 3 3
+      3 2 2 2 2 2
+      GRAPH
+    end
+    let(:contracted_graph) { Graphs::Graph.new.load contracted_graph_text }
+
+    it "contracts the graph over the random points" do
+      srand 1234
+      expect(graph.random_contract).to eq contracted_graph
+    end
+  end
+
 end

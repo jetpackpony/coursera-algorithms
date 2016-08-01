@@ -22,14 +22,9 @@ iterations = original_graph.count
 puts "Calculating minimum cut in a graph of #{original_graph.count} elements"
 iterations.times do
   graph = original_graph.copy
+  graph.random_contract
 
-  while graph.count > 2 do
-    v1 = rand(graph.count) + 1
-    v2 = rand(graph.count) + 1
-    graph.contract(v1, v2)
-  end
-
-  minimum_cut = [minimum_cut, graph.vertices.first.edges.count].min
+  minimum_cut = [minimum_cut, graph.first.edges.count].min
   puts "Speed: #{Time.now - prev}"
   prev = Time.now
 end
