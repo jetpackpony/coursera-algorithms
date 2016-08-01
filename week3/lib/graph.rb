@@ -1,3 +1,5 @@
+require_relative './vertex'
+
 module Graphs
   class Graph
     attr_reader :vertices
@@ -8,7 +10,7 @@ module Graphs
     def load(text_data)
       text_data.split("\n").each do |edges|
         edges = edges.split(%r{\s+}).map!(&:to_i)
-        vert = Vertex.new(edges.shift)
+        vert = Graphs::Vertex.new(edges.shift)
         vert.add_edges(edges)
         self.push vert
       end
@@ -29,6 +31,26 @@ module Graphs
 
     def count
       @vertices.select{ |x| !x.nil? }.count
+    end
+
+    def first
+      vertices.select{ |x| !x.nil? }.first
+    end
+
+    def copy
+      new_graph = Graph.new
+      vertices.each { |vert| new_graph.push vert.copy }
+      new_graph
+    end
+
+    def ==(other)
+      left = vertices.select{ |x| !x.nil? }.sort { |x,y| x.id <=> y.id }
+      right = other.vertices.select{ |x| !x.nil? }.sort { |x,y| x.id <=> y.id }
+      left == right
+    end
+
+    def inspect
+      vertices.map { |vert| vert.inspect + "\n" }
     end
 
     def contract(v1, v2)
@@ -60,65 +82,5 @@ module Graphs
       vertices.select{ |x| !x.nil? }.sample.id
     end
 
-    def first
-      vertices.select{ |x| !x.nil? }.first
-    end
-
-    def copy
-      new_graph = Graph.new
-      vertices.each { |vert| new_graph.push vert.copy }
-      new_graph
-    end
-
-    def ==(other)
-      left = vertices.select{ |x| !x.nil? }.sort { |x,y| x.id <=> y.id }
-      right = other.vertices.select{ |x| !x.nil? }.sort { |x,y| x.id <=> y.id }
-      left == right
-    end
-
-    def inspect
-      vertices.map { |vert| vert.inspect + "\n" }
-    end
-
-    class Vertex
-      attr_reader :id
-      attr_reader :edges
-      def initialize(id)
-        @id = id
-        @edges = []
-      end
-
-      def add_edges(vertices)
-        @edges.concat vertices
-      end
-
-      def has_edge_with(vertex)
-        @edges.include? vertex.id
-      end
-
-      def count_edges_with(vertex)
-        @edges.count vertex.id
-      end
-
-      def replace_edges(from, to)
-        @edges.map! { |edge| edge == from ? to : edge }
-      end
-
-      def remove_self_loops
-        @edges.select! { |edge| edge != id }
-      end
-
-      def ==(other)
-        return false if other.nil?
-        id == other.id &&
-          edges.sort == other.edges.sort
-      end
-
-      def copy
-        new_vert = Vertex.new id
-        new_vert.add_edges @edges
-        new_vert
-      end
-    end
   end
 end

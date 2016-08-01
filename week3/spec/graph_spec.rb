@@ -16,9 +16,9 @@ describe Graphs::Graph do
     let(:parsed_graph) { Graphs::Graph.new.load simple_graph}
 
     it "create vertecies from text data" do
-      expect(parsed_graph[1]).to be_a Graphs::Graph::Vertex
-      expect(parsed_graph[2]).to be_a Graphs::Graph::Vertex
-      expect(parsed_graph[3]).to be_a Graphs::Graph::Vertex
+      expect(parsed_graph[1]).to be_a Graphs::Vertex
+      expect(parsed_graph[2]).to be_a Graphs::Vertex
+      expect(parsed_graph[3]).to be_a Graphs::Vertex
     end
 
     it "assigns proper edges to vertices" do
@@ -191,7 +191,7 @@ describe Graphs::Graph do
     let(:parsed_graph) { Graphs::Graph.new.load simple_graph}
 
     it "create vertecies from text data" do
-      expect(parsed_graph[10]).to be_a Graphs::Graph::Vertex
+      expect(parsed_graph[10]).to be_a Graphs::Vertex
     end
 
     it "assigns proper edges to vertices" do
