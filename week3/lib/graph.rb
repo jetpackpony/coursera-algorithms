@@ -23,6 +23,10 @@ module Graphs
       @vertices.push vertex
     end
 
+    def delete(x)
+      @vertices.delete_at @vertices.find_index { |v| v.id == x }
+    end
+
     def count
       @vertices.count
     end
@@ -31,31 +35,25 @@ module Graphs
       return self if v1 == v2
       v1 = @vertices[v1 - 1].id
       v2 = @vertices[v2 - 1].id
-      new_graph = Graph.new
       @vertices.each do |vert|
         if vert.id == v2
           next
         end
-        vert = vert.copy
+
         if vert.id == v1
           vert.add_edges self[v2].edges
         end
 
         vert.replace_edges v2, v1
         vert.remove_self_loops
-        new_graph.push vert
       end
-      new_graph
-    end
-
-    def contract!(v1, v2)
-      @vertices = contract(v1, v2).vertices
+      delete v2
       self
     end
 
     def copy
       new_graph = Graph.new
-      vertices.each { |vert| new_graph.push vert }
+      vertices.each { |vert| new_graph.push vert.copy }
       new_graph
     end
 

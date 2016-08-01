@@ -34,6 +34,12 @@ describe Graphs::Graph do
     it "returns the number of vertices" do
       expect(parsed_graph.count).to eq 5
     end
+
+    it "creates an independent copy" do
+      new_graph = parsed_graph.copy
+      expect(new_graph[1]).to eq parsed_graph[1]
+      expect(new_graph[1]).not_to eql parsed_graph[1]
+    end
   end
 
   context "graph with parallel edges" do
@@ -92,11 +98,7 @@ describe Graphs::Graph do
     let(:contracted_graph) { Graphs::Graph.new.load contracted_graph_text }
 
     it "correctly contracts graph" do
-      expect(graph.contract(1, 5)).to eq contracted_graph
-    end
-
-    it "correctly contracts self" do
-      graph.contract!(1, 5)
+      graph.contract(1, 5)
       expect(graph).to eq contracted_graph
     end
 
