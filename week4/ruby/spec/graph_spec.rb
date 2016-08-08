@@ -18,5 +18,14 @@ describe GraphSearch do
 
       GRAPH
     }
+    let(:parsed_graph) { GraphSearch::Graph.new.load graph }
+
+    it "stores outgoing connections properly" do
+      expect(parsed_graph[7]).to include 1
+      expect(parsed_graph[9]).to include 7
+      expect(parsed_graph[9]).to include 3
+      expect(parsed_graph[5]).to include 2
+      expect(parsed_graph[5]).not_to include 8
+    end
   end
 end
