@@ -8,6 +8,8 @@ GEM
       rspec-core (~> 3.5.0)
       rspec-expectations (~> 3.5.0)
       rspec-mocks (~> 3.5.0)
+    rspec-autotest (1.0.0)
+      rspec-core (>= 2.99.0.beta1, < 4.0.0)
     rspec-core (3.5.2)
       rspec-support (~> 3.5.0)
     rspec-expectations (3.5.0)
@@ -25,6 +27,7 @@ DEPENDENCIES
   ZenTest
   byebug
   rspec
+  rspec-autotest
 
 BUNDLED WITH
    1.12.5
