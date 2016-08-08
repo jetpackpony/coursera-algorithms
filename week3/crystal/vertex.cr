@@ -11,7 +11,7 @@ module Graphs
     end
 
     def has_edge_with(vertex)
-      @edges.include? vertex.id
+      @edges.includes? vertex.id
     end
 
     def count_edges_with(vertex)

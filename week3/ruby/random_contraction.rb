@@ -11,21 +11,21 @@ text = <<-GRAPH
 GRAPH
 =end
 
-text = IO.read("graph_data.txt")
+text = IO.read(ARGV[0])
 
 time = prev = Time.now
 
 original_graph = Graphs::Graph.new.load text
 minimum_cut = original_graph.count
-iterations = original_graph.count
+iterations = ARGV[1] || original_graph.count
 
 puts "Calculating minimum cut in a graph of #{original_graph.count} elements"
-iterations.times do
+iterations.to_i.times do
   graph = original_graph.copy
   graph.random_contract
 
   minimum_cut = [minimum_cut, graph.first.edges.count].min
-  puts "Speed: #{Time.now - prev}"
+  #puts "Speed: #{Time.now - prev}"
   prev = Time.now
 end
 

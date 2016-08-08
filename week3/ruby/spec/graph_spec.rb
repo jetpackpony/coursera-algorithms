@@ -213,8 +213,8 @@ describe Graphs::Graph do
     let(:graph) { Graphs::Graph.new.load graph_text }
     let(:contracted_graph_text) do
       <<-GRAPH.gsub(/^\s*/, "")
-      2 3 3 3 3 3
-      3 2 2 2 2 2
+      1 3 3
+      3 1 1
       GRAPH
     end
     let(:contracted_graph) { Graphs::Graph.new.load contracted_graph_text }

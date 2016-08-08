@@ -56,21 +56,22 @@ module Graphs
 
     def contract(v1, v2)
       return self if v1 == v2
-      v1 = self[v1].id
-      v2 = self[v2].id
+      vert1 = self[v1]
+      vert2 = self[v2]
+      return self if !vert1.has_edge_with(vert2)
       @vertices.each do |vert|
-        if vert.nil? || vert.id == v2
+        if vert.nil? || vert == vert2
           next
         end
 
-        if vert.id == v1
-          vert.add_edges self[v2].edges
+        if vert == vert1
+          vert.add_edges vert2.edges
         end
 
-        vert.replace_edges v2, v1
+        vert.replace_edges vert2.id, vert1.id
         vert.remove_self_loops
       end
-      delete v2
+      delete vert2.id
       self
     end
 

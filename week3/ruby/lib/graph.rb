@@ -55,6 +55,7 @@ module Graphs
 
     def contract(v1, v2)
       return self if v1 == v2
+      return self if !self[v1].has_edge_with(self[v2])
       @vertices.each do |vert|
         if vert.nil? || vert.id == v2
           next
