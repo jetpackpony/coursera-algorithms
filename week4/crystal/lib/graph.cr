@@ -21,6 +21,7 @@ module GraphSearch
       @explored = [] of Int32
       @sccs = [] of Array(Int32)
       @current_scc = [] of Int32
+      @one_percent = 0
     end
 
     def [](id)
@@ -44,6 +45,7 @@ module GraphSearch
         .times do                                 # init vert array with empty
           @vertices.push [] of Int32
         end
+      @one_percent = (@vertices.size / 100.00).ceil.to_i
 
       text_data.split("\n").each do |line|
         load_line line.strip.split(%r{\s+}).map { |x| x.to_i }
@@ -105,10 +107,16 @@ module GraphSearch
         dfs vert
       end
       reverse
-      log "  - starting counting finishing times"
+      log "  - completed counting finishing times"
     end
 
     private def dfs(vert)
+      # Log the completeness
+      if @explored.size % @one_percent == 0
+        log "    - #{@explored.size / @one_percent}% complete"
+      end
+
+      # Do the thing
       @explored.push vert
       self[vert].each do |edge|
         next if @explored.includes? edge
@@ -118,6 +126,7 @@ module GraphSearch
     end
 
     private def traverse_sccs
+      log "  - starting mapping sccs"
       @explored = [] of Int32
       @finishing_times.reverse.each do |vert|
         next if @explored.includes? vert
@@ -125,9 +134,16 @@ module GraphSearch
         dfs_collect vert
         @sccs.push @current_scc
       end
+      log "  - completed mapping sccs"
     end
 
     private def dfs_collect(vert)
+      # Log the completeness
+      if @explored.size % @one_percent == 0
+        log "    - #{@explored.size / @one_percent}% complete"
+      end
+
+      # Do the thing
       @explored.push vert
       @current_scc.push vert
       self[vert].each do |edge|
