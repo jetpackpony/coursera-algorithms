@@ -47,7 +47,70 @@ module GraphSearch
       end
     end
 
+    def compute_sccs
+      @sccs = []
+      count_finishing_times
+      traverse_sccs
+    end
+
+    def get_sccs
+      @sccs
+    end
+
+    def reverse
+      new_vert = []
+      self.each_with_index do |edges, vert|
+        raise "the edges for #{vert} are nil for some reason" if edges.nil?
+        edges.each do |edge|
+          edge -= 1
+          new_vert[edge] = [] if !new_vert[edge]
+          new_vert[edge].push vert
+        end
+      end
+      @vertices = new_vert
+    end
+
     private
+
+    def count_finishing_times
+      reverse
+      @finishing_times = []
+      @explored = []
+      self.each_index do |vert|
+        next if @explored.include? vert
+        dfs vert
+      end
+      reverse
+    end
+
+    def dfs(vert)
+      @explored.push vert
+      raise "Tried to reffer to vert #{vert} while nil" if self[vert].nil?
+      self[vert].each do |edge|
+        next if @explored.include? edge
+        dfs edge
+      end
+      @finishing_times.push vert
+    end
+
+    def traverse_sccs
+      @explored = []
+      @finishing_times.reverse.each do |vert|
+        next if @explored.include? vert
+        @current_scc = []
+        dfs_collect vert
+        @sccs.push @current_scc
+      end
+    end
+
+    def dfs_collect(vert)
+      @explored.push vert
+      @current_scc.push vert
+      self[vert].each do |edge|
+        next if @explored.include? edge
+        dfs_collect edge
+      end
+    end
 
     def load_line(vertex)
       if !self[vertex[0]]

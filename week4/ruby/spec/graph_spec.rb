@@ -67,6 +67,36 @@ describe GraphSearch do
       end
     end
 
+    describe "#compute_sccs" do
+      it "computes strongly connected components correctly" do
+        graph.compute_sccs
+        graph.get_sccs.each(&:sort!)
+        expect(graph.get_sccs).to include [1,4,7]
+        expect(graph.get_sccs).to include [3,6,9]
+        expect(graph.get_sccs).to include [2,5,8]
+      end
+
+      it "computes strongly connected components correctly" do
+        graph_1.compute_sccs
+        graph_1.get_sccs.each(&:sort!)
+        expect(graph_1.get_sccs).to include [1,2,3]
+        expect(graph_1.get_sccs).to include [9,10,11,12]
+        expect(graph_1.get_sccs).to include [6,7,8]
+        expect(graph_1.get_sccs).to include [5]
+      end
+    end
+
+    describe "#reverse" do
+      it "reverses the edges correctly" do
+        graph.reverse
+        expect(graph[7]).to include 9
+        expect(graph[7]).to include 4
+        expect(graph[9]).to include 6
+        expect(graph[8]).to include 2
+      end
+
+    end
+
     # These tests are coupled with implementation.
     # Disregard if failing after refactoring
     describe "PRIVATE" do
