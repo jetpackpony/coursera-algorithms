@@ -1,6 +1,8 @@
 require 'byebug'
 module GraphSearch
   class Graph
+    include Enumerable
+
     def initialize
       @vertices = []
     end
@@ -16,11 +18,36 @@ module GraphSearch
       @vertices[id - 1]
     end
 
-    private
-
     def []=(index, value)
       @vertices[index - 1] = value
     end
+
+    def count
+      @vertices.count
+    end
+
+    def each(&block)
+      @vertices.each do |vert|
+        next if vert.nil?
+        block.call(vert)
+      end
+    end
+
+    def each_with_index(&block)
+      @vertices.each_with_index do |vert, index|
+        next if vert.nil?
+        block.call(vert, index + 1)
+      end
+    end
+
+    def each_index(&block)
+      @vertices.each_with_index do |vert, index|
+        next if vert.nil?
+        block.call(index + 1)
+      end
+    end
+
+    private
 
     def load_line(vertex)
       if !self[vertex[0]]
