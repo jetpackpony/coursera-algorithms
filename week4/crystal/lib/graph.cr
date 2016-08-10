@@ -1,9 +1,26 @@
 module GraphSearch
-  class Graph
+  class Log
+    def initialize(@output : String)
+    end
 
+    def log(text)
+      case @output
+      when "puts"
+        puts text
+      else
+      end
+    end
+  end
+
+  class Graph
     getter :vertices
-    def initialize
+
+    def initialize(@log = Log.new("none"))
       @vertices = [] of Array(Int32)
+      @finishing_times = [] of Int32
+      @explored = [] of Int32
+      @sccs = [] of Array(Int32)
+      @current_scc = [] of Int32
     end
 
     def [](id)
@@ -14,7 +31,7 @@ module GraphSearch
       @vertices[index - 1] = value
     end
 
-    def count
+    def size
       @vertices.size
     end
 
@@ -40,6 +57,12 @@ module GraphSearch
       end
     end
 
+    def each_index(&block)
+      @vertices.each_with_index do |vert, index|
+        yield index + 1
+      end
+    end
+
     def reverse
       new_vert = [] of Array(Int32)
       @vertices.size.times do
@@ -54,8 +77,64 @@ module GraphSearch
       @vertices = new_vert
     end
 
+    def compute_sccs
+      count_finishing_times
+      traverse_sccs
+    end
+
+    def get_sccs
+      @sccs
+    end
+
+    private def log(text)
+      @log.log text
+    end
+
     private def load_line(vertex)
       self[vertex[0]].push vertex[1]
     end
+
+    private def count_finishing_times
+      log "  - reversing the graph"
+      reverse
+      log "  - starting counting finishing times"
+      @finishing_times = [] of Int32
+      @explored = [] of Int32
+      self.each_index do |vert|
+        next if @explored.includes? vert
+        dfs vert
+      end
+      reverse
+      log "  - starting counting finishing times"
+    end
+
+    private def dfs(vert)
+      @explored.push vert
+      self[vert].each do |edge|
+        next if @explored.includes? edge
+        dfs edge
+      end
+      @finishing_times.push vert
+    end
+
+    private def traverse_sccs
+      @explored = [] of Int32
+      @finishing_times.reverse.each do |vert|
+        next if @explored.includes? vert
+        @current_scc = [] of Int32
+        dfs_collect vert
+        @sccs.push @current_scc
+      end
+    end
+
+    private def dfs_collect(vert)
+      @explored.push vert
+      @current_scc.push vert
+      self[vert].each do |edge|
+        next if @explored.includes? edge
+        dfs_collect edge
+      end
+    end
+
   end
 end
