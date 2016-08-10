@@ -37,6 +37,11 @@ describe GraphSearch do
     9 11
     9 8
     10 7
+    13 7
+    13 10
+    13 14
+    10 14
+    11 14
 
     GRAPH
   }
@@ -83,6 +88,8 @@ describe GraphSearch do
         expect(graph_1.get_sccs).to include [9,10,11,12]
         expect(graph_1.get_sccs).to include [6,7,8]
         expect(graph_1.get_sccs).to include [5]
+        expect(graph_1.get_sccs).to include [13]
+        expect(graph_1.get_sccs).to include [14]
       end
     end
 
@@ -94,7 +101,6 @@ describe GraphSearch do
         expect(graph[9]).to include 6
         expect(graph[8]).to include 2
       end
-
     end
 
     # These tests are coupled with implementation.
