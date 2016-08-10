@@ -1,4 +1,5 @@
 require 'byebug'
+
 module GraphSearch
   class Graph
     include Enumerable
@@ -74,18 +75,26 @@ module GraphSearch
     private
 
     def count_finishing_times
+      puts "  - reversing the graph"
       reverse
+      puts "  - starting counting finishing times"
       @finishing_times = []
       @explored = []
+      i = 0
+      @one_percent = (self.count / 100.0).ceil
       self.each_index do |vert|
         next if @explored.include? vert
         dfs vert
       end
       reverse
+      puts "  - starting counting finishing times"
     end
 
     def dfs(vert)
       @explored.push vert
+      if @explored.count % @one_percent == 0
+        puts "    - #{@explored.count / @one_percent}% done" 
+      end
       raise "Tried to reffer to vert #{vert} while nil" if self[vert].nil?
       self[vert].each do |edge|
         next if @explored.include? edge
