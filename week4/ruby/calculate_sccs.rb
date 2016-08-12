@@ -15,4 +15,6 @@ graph.compute_sccs
 counts = graph.get_sccs.map(&:count).sort
 counts = counts.slice(-5, 5) if counts.count > 4
 
+puts "5 largest SCCs:"
 puts counts.reverse.inspect
+puts "Done in #{Time.now - start_time}"

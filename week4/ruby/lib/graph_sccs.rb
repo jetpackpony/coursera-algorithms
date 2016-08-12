@@ -18,8 +18,9 @@ module GraphSearch
       reverse
       log "  - starting counting finishing times" +
         "(#{Time.now - prev_time}) seconds"
+
       @finishing_times = []
-      @explored = []
+      @explored = Set.new
       @one_percent = (self.count / 100.0).ceil
       self.each_index do |vert|
         next if @explored.include? vert
@@ -32,29 +33,26 @@ module GraphSearch
     def dfs(vert)
       stack = [vert]
       while stack.length > 0 do
-        if @explored.count % @one_percent == 0
-          log "    - #{@explored.count / @one_percent}% done " +
-            "(#{Time.now - prev_time}) seconds"
-        end
-
         v = stack.pop
         if !@explored.include? v
-          @explored.push v
+          if @explored.size % @one_percent == 0
+            log "    - #{@explored.size / @one_percent}% done " +
+              "(#{Time.now - prev_time}) seconds"
+          end
+          @explored.add v
           stack.push v
           self[v].each do |edge|
             next if @explored.include? edge
             stack.push edge
           end
         else
-          if !@finishing_times.include? v
-            @finishing_times.push v
-          end
+          @finishing_times.push v
         end
       end
     end
 
     def traverse_sccs
-      @explored = []
+      @explored = Set.new
       @finishing_times.reverse.each do |vert|
         next if @explored.include? vert
         @current_scc = []
@@ -64,11 +62,11 @@ module GraphSearch
     end
 
     def dfs_collect(vert)
-      @explored.push vert
+      @explored.add vert
       stack = [vert]
       while stack.length > 0 do
-        if @explored.count % @one_percent == 0
-          log "    - #{@explored.count / @one_percent}% done " +
+        if @explored.size % @one_percent == 0
+          log "    - #{@explored.size / @one_percent}% done " +
             "(#{Time.now - prev_time}) seconds"
         end
 
@@ -76,7 +74,7 @@ module GraphSearch
         @current_scc.push v
         self[v].each do |edge|
           next if @explored.include? edge
-          @explored.push edge
+          @explored.add edge
           stack.push edge
         end
       end
