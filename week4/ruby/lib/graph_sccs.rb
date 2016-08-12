@@ -20,7 +20,6 @@ module GraphSearch
         "(#{Time.now - prev_time}) seconds"
       @finishing_times = []
       @explored = []
-      i = 0
       @one_percent = (self.count / 100.0).ceil
       self.each_index do |vert|
         next if @explored.include? vert
@@ -31,17 +30,27 @@ module GraphSearch
     end
 
     def dfs(vert)
-      @explored.push vert
-      if @explored.count % @one_percent == 0
-        log "    - #{@explored.count / @one_percent}% done " +
-          "(#{Time.now - prev_time}) seconds"
+      stack = [vert]
+      while stack.length > 0 do
+        if @explored.count % @one_percent == 0
+          log "    - #{@explored.count / @one_percent}% done " +
+            "(#{Time.now - prev_time}) seconds"
+        end
+
+        v = stack.pop
+        if !@explored.include? v
+          @explored.push v
+          stack.push v
+          self[v].each do |edge|
+            next if @explored.include? edge
+            stack.push edge
+          end
+        else
+          if !@finishing_times.include? v
+            @finishing_times.push v
+          end
+        end
       end
-      raise "Tried to reffer to vert #{vert} while nil" if self[vert].nil?
-      self[vert].each do |edge|
-        next if @explored.include? edge
-        dfs edge
-      end
-      @finishing_times.push vert
     end
 
     def traverse_sccs
@@ -56,16 +65,21 @@ module GraphSearch
 
     def dfs_collect(vert)
       @explored.push vert
-      if @explored.count % @one_percent == 0
-        log "    - #{@explored.count / @one_percent}% done " +
-          "(#{Time.now - prev_time}) seconds"
-      end
-      @current_scc.push vert
-      self[vert].each do |edge|
-        next if @explored.include? edge
-        dfs_collect edge
+      stack = [vert]
+      while stack.length > 0 do
+        if @explored.count % @one_percent == 0
+          log "    - #{@explored.count / @one_percent}% done " +
+            "(#{Time.now - prev_time}) seconds"
+        end
+
+        v = stack.pop
+        @current_scc.push v
+        self[v].each do |edge|
+          next if @explored.include? edge
+          @explored.push edge
+          stack.push edge
+        end
       end
     end
-
   end
 end

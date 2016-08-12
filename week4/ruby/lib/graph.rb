@@ -34,8 +34,7 @@ module GraphSearch
     def reverse
       new_vert = []
       self.each_with_index do |edges, vert|
-        raise "the edges for #{vert} are nil for some reason" if edges.nil?
-        new_vert[vert - 1] = [] if !new_vert[vert - 1]
+        new_vert[vert - 1] || new_vert[vert - 1] = []
         edges.each do |edge|
           edge -= 1
           new_vert[edge] = [] if !new_vert[edge]
