@@ -1,32 +1,5 @@
 require "./lib/graph"
 
-#text_data =
-#  <<-GRAPH
-#  1 2
-#  2 3
-#  3 1
-#  2 5
-#  5 6
-#  6 7
-#  7 8
-#  8 6
-#  3 9
-#  3 12
-#  12 9
-#  9 10
-#  10 11
-#  11 12
-#  9 11
-#  9 8
-#  10 7
-#  13 7
-#  13 10
-#  13 14
-#  10 14
-#  11 14
-#
-#  GRAPH
-
 filename = "../graph_data.txt"
 text_data  = File.read(filename)
 start_time = Time.now

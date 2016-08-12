@@ -18,7 +18,7 @@ module GraphSearch
     def initialize(@log = Log.new("none"))
       @vertices = [] of Array(Int32)
       @finishing_times = [] of Int32
-      @explored = [] of Int32
+      @explored = Set(Int32).new
       @sccs = [] of Array(Int32)
       @current_scc = [] of Int32
       @one_percent = 0
@@ -101,7 +101,7 @@ module GraphSearch
       reverse
       log "  - starting counting finishing times"
       @finishing_times = [] of Int32
-      @explored = [] of Int32
+      @explored = Set(Int32).new
       self.each_index do |vert|
         next if @explored.includes? vert
         dfs vert
@@ -117,7 +117,7 @@ module GraphSearch
       end
 
       # Do the thing
-      @explored.push vert
+      @explored.add vert
       self[vert].each do |edge|
         next if @explored.includes? edge
         dfs edge
@@ -127,7 +127,7 @@ module GraphSearch
 
     private def traverse_sccs
       log "  - starting mapping sccs"
-      @explored = [] of Int32
+      @explored = Set(Int32).new
       @finishing_times.reverse.each do |vert|
         next if @explored.includes? vert
         @current_scc = [] of Int32
@@ -144,7 +144,7 @@ module GraphSearch
       end
 
       # Do the thing
-      @explored.push vert
+      @explored.add vert
       @current_scc.push vert
       self[vert].each do |edge|
         next if @explored.includes? edge
