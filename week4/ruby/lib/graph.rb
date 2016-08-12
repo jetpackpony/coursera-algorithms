@@ -22,9 +22,12 @@ module GraphSearch
     end
 
     def load(text_data)
-      text_data.split("\n").each do |line|
-        load_line line.split(/\s+/).map(&:to_i)
-      end
+      text_data
+        .split(/\s+/)
+        .map(&:to_i)
+        .each_slice(2) do |els|
+          load_edge els[0], els[1]
+        end
       self
     end
 
@@ -44,10 +47,10 @@ module GraphSearch
 
     private
 
-    def load_line(vertex)
-      self[vertex[0]] = [] if !self[vertex[0]]
-      self[vertex[1]] = [] if !self[vertex[1]]
-      self[vertex[0]].push vertex[1]
+    def load_edge(v1, v2)
+      self[v1] || self[v1] = []
+      self[v2] || self[v2] = []
+      self[v1].push v2
     end
   end
 end

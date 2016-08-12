@@ -14,6 +14,10 @@ module GraphSearch
       @vertices[index - 1] = value
     end
 
+    def push(el)
+      @vertices.push el
+    end
+
     def count
       @vertices.select { |x| !x.nil? }.count
     end
