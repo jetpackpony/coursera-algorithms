@@ -14,20 +14,17 @@ module GraphSearch
     private
 
     def count_finishing_times
-      log "  - reversing the graph" + "(#{Time.now - prev_time}) seconds"
+      log "  - counting finishing times"
       reverse
-      log "  - starting counting finishing times" +
-        "(#{Time.now - prev_time}) seconds"
 
       @finishing_times = []
       @explored = Set.new
-      @one_percent = (self.count / 100.0).ceil
+      @ten_percent = (self.count / 10.0).ceil
       self.each_index do |vert|
         next if @explored.include? vert
         dfs vert
       end
       reverse
-      log "  - starting counting finishing times"
     end
 
     def dfs(vert)
@@ -35,9 +32,8 @@ module GraphSearch
       while stack.length > 0 do
         v = stack.pop
         if !@explored.include? v
-          if @explored.size % @one_percent == 0
-            log "    - #{@explored.size / @one_percent}% done " +
-              "(#{Time.now - prev_time}) seconds"
+          if @explored.size % @ten_percent == 0
+            log "    - #{@explored.size / @ten_percent}0% done "
           end
           @explored.add v
           stack.push v
@@ -52,6 +48,7 @@ module GraphSearch
     end
 
     def traverse_sccs
+      log "  - collecting sccs"
       @explored = Set.new
       @finishing_times.reverse.each do |vert|
         next if @explored.include? vert
@@ -65,9 +62,8 @@ module GraphSearch
       @explored.add vert
       stack = [vert]
       while stack.length > 0 do
-        if @explored.size % @one_percent == 0
-          log "    - #{@explored.size / @one_percent}% done " +
-            "(#{Time.now - prev_time}) seconds"
+        if @explored.size % @ten_percent == 0
+          log "    - #{@explored.size / @ten_percent}0% done "
         end
 
         v = stack.pop
