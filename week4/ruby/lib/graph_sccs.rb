@@ -49,8 +49,10 @@ module GraphSearch
 
     def collect_sccs(finishing_times)
       log "  - collecting sccs"
+
       explored = Set.new
       sccs = []
+
       finishing_times.reverse.each do |vert|
         next if explored.include? vert
         current_scc = []
@@ -72,9 +74,6 @@ module GraphSearch
         sccs.push current_scc
       end
       sccs
-    end
-
-    def dfs_collect(vert)
     end
   end
 end
