@@ -14,31 +14,31 @@ describe Graph do
       end
 
       it "creates vertices with the correct edges" do
-        expect(graph.get_vertex(1).has_edge_with 2).to be true
-        expect(graph.get_vertex(1).has_edge_with 2).to be true
+        expect(graph[1].has_edge_with 2).to be true
+        expect(graph[1].has_edge_with 2).to be true
 
-        expect(graph1.get_vertex(1).has_edge_with 2).to be true
-        expect(graph1.get_vertex(1).has_edge_with 4).to be true
+        expect(graph1[1].has_edge_with 2).to be true
+        expect(graph1[1].has_edge_with 4).to be true
 
-        expect(graph2.get_vertex(3).has_edge_with 4).to be true
-        expect(graph2.get_vertex(3).has_edge_with 1).to be true
+        expect(graph2[3].has_edge_with 4).to be true
+        expect(graph2[3].has_edge_with 1).to be true
       end
 
       it "does not create vertices with wrong edges" do
-        expect(graph.get_vertex(1).has_edge_with 3).to be false
-        expect(graph.get_vertex(6).has_edge_with 8).to be false
+        expect(graph[1].has_edge_with 3).to be false
+        expect(graph[6].has_edge_with 8).to be false
 
-        expect(graph1.get_vertex(1).has_edge_with 5).to be false
-        expect(graph1.get_vertex(4).has_edge_with 2).to be false
+        expect(graph1[1].has_edge_with 5).to be false
+        expect(graph1[4].has_edge_with 2).to be false
 
-        expect(graph2.get_vertex(1).has_edge_with 4).to be false
-        expect(graph2.get_vertex(3).has_edge_with 6).to be false
+        expect(graph2[1].has_edge_with 4).to be false
+        expect(graph2[3].has_edge_with 6).to be false
       end
 
       it "creates vertices with correct edge lengths" do
-        expect(graph.get_vertex(1).edges[8]).to eq 2
-        expect(graph1.get_vertex(1).edges[4]).to eq 2
-        expect(graph2.get_vertex(1).edges[2]).to eq 3
+        expect(graph[1].edges[8]).to eq 2
+        expect(graph1[1].edges[4]).to eq 2
+        expect(graph2[1].edges[2]).to eq 3
       end
     end
   end

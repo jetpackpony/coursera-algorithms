@@ -9,11 +9,11 @@ module Graph
 
   def self.load_vertex(graph, edges)
     id = edges.shift.to_i
-    vert = graph.get_vertex(id) || Vertex.new
+    vert = graph[id] || Vertex.new
     edges.each do |edge|
       edge = edge.split(",").map(&:to_i)
       vert.add_edge edge[0], edge[1]
     end
-    graph.add_vertex id, vert
+    graph[id] = vert
   end
 end

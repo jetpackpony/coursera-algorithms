@@ -6,7 +6,7 @@ module Graph
     while explored.size < graph.count
       lengths = []
       explored.each do |v|
-        graph.get_vertex(v).edges.each do |vert_id, length|
+        graph[v].edges.each do |vert_id, length|
           next if explored.include? vert_id
           lengths.push({
             vert_id: vert_id,
