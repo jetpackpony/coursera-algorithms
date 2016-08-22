@@ -1,4 +1,6 @@
 require 'byebug'
+require 'set'
+
 module TwoSum
   def self.str_to_set(string)
     string.split("\n").map(&:to_i).to_set
