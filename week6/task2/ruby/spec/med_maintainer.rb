@@ -1,0 +1,3 @@
+describe MedianMaintainer do
+
+end
