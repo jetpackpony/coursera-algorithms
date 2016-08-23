@@ -1,3 +1,0 @@
-describe MedianMaintainer do
-
-end
