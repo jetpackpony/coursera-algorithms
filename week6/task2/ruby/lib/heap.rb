@@ -1,5 +1,4 @@
-require 'byebug'
-require 'heap_general'
+require_relative './heap_general'
 
 module Heap
   class MinHeap

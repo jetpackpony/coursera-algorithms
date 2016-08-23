@@ -1,5 +1,4 @@
-require 'heap'
-require 'byebug'
+require_relative './heap'
 
 class MedianMaintainer
   include Heap
