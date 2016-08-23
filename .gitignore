@@ -1,2 +1,3 @@
 .byebug*
 benchmarks
+data*.txt
